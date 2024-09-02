@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456789
+    ports:
+      - "27018:27017"
+    volumes:
+      - /home/mongodata:/data/db
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mongdbs-api
+    restart: always
+    ports:
+      - "8085:8085"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://root:123456789@mongo:27017/admin
+    volumes:
+      - /var/data/images:/var/data/images  # 添加这个卷挂载
+
+volumes:
+  mongo_data:
